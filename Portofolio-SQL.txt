@@ -1,0 +1,96 @@
+---QUERY---
+SELECT 
+destination , --HELLO
+passanger , 
+time as 'The Time'
+FROM dataset_1 
+WHERE passanger = 'Alone'
+OR time = '2PM'
+ORDER BY time DESC;
+
+---AGREGATION---
+SELECT destination, time,
+AVG (temperature), 
+SUM (temperature), 
+COUNT (DISTINCT temperature)
+FROM dataset_1 d
+WHERE time <> '10PM'
+GROUP BY destination, time
+--HAVING occupation = 'student' (used to filter data beLOW GROUP BY command )
+ORDER BY time;
+
+---JOINS AND UNIONS (COMBINING DATA)---
+
+--UNION
+SELECT*
+FROM dataset_1 d 
+UNION
+SELECT*
+FROM table_to_union ttu 
+
+SELECT*
+FROM dataset_1 d 
+UNION ALL --STACK ALL DATA TOGETHER
+SELECT*
+FROM table_to_union ttu
+
+SELECT DISTINCT 
+destination
+FROM dataset_1 d
+
+--SUB QUERRY
+SELECT DISTINCT 
+destination 
+FROM
+(
+SELECT *
+FROM dataset_1 d 
+UNION
+SELECT *
+FROM table_to_union ttu); 
+
+--JOIN
+SELECT *
+FROM table_to_join ttj 
+
+--d. or ttj. means dont bring the colom of from the data
+--for an example below d.time means to not bring the column
+--of time in dataset_1 and ttj.part_of_day  means to not 
+--bring the column of part_of_day in table_to_join
+SELECT 
+destination, 
+d.time, 
+ttj.part_of_day 
+FROM dataset_1 d 
+LEFT JOIN table_to_join ttj 
+ON d.time = ttj.time
+--in this case LEFT JOIN command means that
+--the dataset_1 at the left table and table_to_join
+--is at the right table where d.time equals ttj.time
+
+---ADVANCE QUERRY---
+SELECT *
+FROM dataset_1 d 
+WHERE d.time LIKE '%P%'
+--%x% means to filter time with spesific
+
+SELECT*
+FROM dataset_1 d 
+WHERE temperature BETWEEN 29 AND 75
+
+SELECT*
+FROM dataset_1 d 
+WHERE occupation IN ('Sales & Reated', 'Management')
+
+SELECT 
+	destination, 
+	weather, 
+	AVG (temperature) OVER(PARTITION BY weather) AS 'avg_temp_by_weather'
+FROM dataset_1  
+
+SELECT 
+destination, 
+time, 
+LEAD(row_count , 1, '99999') OVER (ORDER BY row_count) AS 'LaggedCount' 
+FROM dataset_1;
+
